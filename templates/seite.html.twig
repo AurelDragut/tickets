@@ -1,0 +1,60 @@
+{% extends "base.html.twig" %}
+
+{% block title %}{{ seite.Titel }}{% endblock %}
+
+{% block body %}
+
+    {% if slider is defined %}
+        <!-- zuerst das Sichtfenster -->
+        <div class="cssSlider">
+
+            <!-- die inputs um den Slider zu Steuern -->
+            {% for slide in slider %}
+                <input type="radio" name="slider" id="slide{{ loop.index }}" {% if loop.first %} checked="checked" {% endif %}>
+            {% endfor %}
+
+            <!-- die einzelnen Slides, hier als Liste angelegt -->
+            <ul class="sliderElements">
+                {% for slide in slider %}
+                    <li>
+                        <figure>
+                            <img src="/images/slides/{{ slide.Bild }}" alt="" width="1200" height="400">
+                            <figcaption>
+                                {{ slide.Text|raw }}
+                            </figcaption>
+                        </figure>
+                    </li>
+                {% endfor %}
+            </ul>
+
+            <!-- Eine Steuerung -->
+            <ul class="sliderControls">
+                {% for slide in slider %}
+                    <li><label for="slide{{ loop.index }}"></label></li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <div class="container">
+
+        {% if seite.Titel != 'Startseite' %}
+            <h1>{{ seite.Titel }}</h1>
+        {% endif %}
+
+        {{ seite.Inhalt|raw }}
+
+        {% if haendler is defined %}
+            <h1>H&auml;ndler</h1>
+            <div class="row">
+                {% for haendler in haendler %}
+                    <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12"><img src="{{ asset('/images/haendler/') ~ haendler.Bild }}" alt="{{ haendler.Name }}"></div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block footer_javascripts %}
+    {{ encore_entry_script_tags('app') }}
+{% endblock %}

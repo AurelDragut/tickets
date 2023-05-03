@@ -1,0 +1,155 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block page_title %}
+    Dashboard - Batterie Reklamation
+{% endblock %}
+
+{% block content_title %}Dashboard {% endblock %}
+
+{% block main %}
+
+    {% if is_granted('ROLE_MITARBEITER') %}
+    <div class="row">
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Rechnungen</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ anzahl.Rechnungen }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Artikel</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ anzahl.Artikel }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Auftr&auml;ge</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ anzahl.Auftraege }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pending Requests Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                Archivierte Auftr&auml;ge</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ anzahl.ArchivierteAuftraege }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="row">
+        <div class="col-4 mb-2">
+            <div class="card">
+                <div class="card-header">{% if is_granted('ROLE_MITARBEITER') %}Letzte{% else %}Meine{% endif %} Aufträge</div>
+                <ol class="list-group list-group-flush">
+                    {% for auftrag in letzteAuftraege %}
+                        <li class="list-group-item">
+                            <a href="{{ auftrag.targetUrl }}">{{ auftrag.name }} </a>
+                        </li>
+                    {% endfor %}
+                </ol>
+            </div>
+        </div>
+        <div class="col-5">
+            <div class="card mb-2">
+                <div class="card-header">{% if is_granted('ROLE_MITARBEITER') %}Letzte{% else %}Meine{% endif %} Artikel</div>
+                <ol class="list-group list-group-flush">
+                    {% for artikel in letzteArtikel %}
+                        <li class="list-group-item">
+                            <a href="{{ artikel.targetUrl }}">{{ artikel.Bezeichnung }} </a>
+                        </li>
+                    {% endfor %}
+                </ol>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="card mb-2">
+                <div class="card-header">{% if is_granted('ROLE_MITARBEITER') %}Letzte{% else %}Meine{% endif %} Rechnungen</div>
+                <ol class="list-group list-group-flush">
+                    {% for rechnung in letzteRechnungen %}
+                        <li class="list-group-item">
+                            <a href="{{ rechnung.targetUrl }}"> {{ rechnung.rechnungsnummer }} - {{ rechnung.Vorname }} {{ rechnung.Nachname }}, {{ rechnung.Ort }} {{ rechnung.PLZ }}</a>
+                        </li>
+                    {% endfor %}
+                </ol>
+            </div>
+        </div>
+        {% if is_granted('ROLE_ADMIN') %}
+        <div class="col-4">
+            <div class="card mb-2">
+                <div class="card-header">Mitarbeiter</div>
+                <ol class="list-group list-group-flush">
+                    {% for mitarbeiter in mitarbeiterListe %}
+                        <li class="list-group-item">
+                            {{ mitarbeiter.name }} ( <a href="https://test.batterie-reklamation.de/admin?referrer=%2Fadmin%3FcrudAction%3Dindex%26crudControllerFqcn%3DApp%255CController%255CAdmin%255CAuftragCrudController&crudAction=index&crudControllerFqcn=App\Controller\Admin\AuftragCrudController&filters[Mitarbeiter][comparison]=%3D&filters[Mitarbeiter][value]={{ mitarbeiter.id }}">{{mitarbeiter.auftragsCount()}} Auftr&auml;ge </a>)
+                        </li>
+                    {% endfor %}
+                </ol>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if is_granted('ROLE_MITARBEITER') %}
+            <div class="col-4">
+                <div class="card mb-2">
+                    <div class="card-header">Gr&uuml;nde</div>
+                    <ol class="list-group list-group-flush">
+                        {% for grund in grundeListe %}
+                            <li class="list-group-item">
+                                {{ grund.Titel }} ( <a href="https://test.batterie-reklamation.de/admin?referrer=%2Fadmin%3FcrudAction%3Dindex%26crudControllerFqcn%3DApp%255CController%255CAdmin%255CAuftragCrudController&crudAction=index&crudControllerFqcn=App%5CController%5CAdmin%5CAuftragCrudController&filters%5BGrund%5D%5Bcomparison%5D=%3D&filters%5BGrund%5D%5Bvalue%5D={{ grund.id }}"> {{grund.auftragsCount()}} Auftr&auml;ge</a> )
+                            </li>
+                        {% endfor %}
+                    </ol>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card mb-2">
+                    <div class="card-header">Zust&auml;nde</div>
+                    <ol class="list-group list-group-flush">
+                        {% for status in statusListe %}
+                            <li class="list-group-item">
+                                {{ status.Bezeichnung }} ( <a href="https://test.batterie-reklamation.de/admin?referrer=%2Fadmin%3FcrudAction%3Dindex%26crudControllerFqcn%3DApp%255CController%255CAdmin%255CAuftragCrudController%26menuIndex%3D6%26submenuIndex%3D-1&crudAction=index&crudControllerFqcn=App%5CController%5CAdmin%5CAuftragCrudController&menuIndex=6&submenuIndex=-1&filters%5BStatus%5D%5Bcomparison%5D=%3D&filters%5BStatus%5D%5Bvalue%5D={{ status.id }}">{{status.auftragsCount()}} Auftr&auml;ge</a> )
+                            </li>
+                        {% endfor %}
+                    </ol>
+                </div>
+            </div>
+        {% endif %}
+
+    </div>
+{% endblock %}
